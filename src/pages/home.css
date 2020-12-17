@@ -1,0 +1,130 @@
+.box {
+  padding: 0 1rem 0 1rem;
+}
+
+.ant-spin-nested-loading, .ant-spin-container {
+  height: 100%;
+}
+
+.header {
+  background-color: #ececec;
+  font-weight: bold;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 0.5rem 0 0.5rem 0;
+  margin-bottom: 1rem;
+}
+
+.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+  height: 40px;
+  border-radius: 6px;
+}
+.ant-select-single .ant-select-selector .ant-select-selection-item {
+  line-height: 37px;
+}
+.select_one {
+  margin-right: 1rem;
+}
+
+.specification {
+  margin-top: 1rem;
+  margin-bottom: 1.3rem;
+}
+.select_three {
+  margin-right: 1rem;
+}
+.ant-select-arrow {
+  display: flex;
+  align-items: center;
+  
+}
+
+.select_btn {
+  padding: 4px 22px;
+  height: 37px;
+  border-radius: 6px;
+}
+
+.ant-col {
+  padding: 0.5rem 0 0.5rem 0rem;
+}
+.guige {
+  display: flex;
+  align-items: center;
+}
+.guige > img {
+  width: 50px;
+  margin: 0 10px 0 15px;
+}
+.specification_pull_down {
+  height: 440px;
+  overflow:auto;
+  border-radius: 5px;
+}
+.ant-checkbox-inner {
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+}
+.ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border-color: #fd8383;
+}
+.ant-checkbox-checked::after {
+  border: none;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  border-radius: 10px;
+  background-color: #fd8383;
+  border-color: #fd8383;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100px;
+}
+.moneys {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  margin-left: 50%;
+}
+.moneys:after, .moneys:before {
+  width: 0px;
+  height: 0px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent #effdff transparent;
+  position: absolute;
+  content: ' ';
+  top: 15px;
+  left: 225px;
+  transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+}
+.moneys:before {
+  top: 15px;
+  border-color: transparent transparent #09f transparent;
+}
+.e {
+  border: 1px solid #c7c7c7;
+  width: 148px;
+  height: 40px;
+  line-height: 35px;
+  border-radius: 7px;
+  margin-left: 17px;
+  padding-left: 8px;
+  background-color: #effdff;
+}
+.anticon svg {
+  width: 20px;
+  height: 20px;
+}
+.footer_child2 {
+  display: flex;
+  justify-content:center;
+  margin-top: 10px;
+}

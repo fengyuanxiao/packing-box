@@ -3,15 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.3.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "antd": "^4.9.2",
+    "axios": "^0.21.0",
+    "dingtalk-jsapi": "^2.13.9",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
+    "dev": "node --max-http-header-size=1000000 ./node_modules/.bin/webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -34,5 +39,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy":"http://hd2020.py6.com"
 }
