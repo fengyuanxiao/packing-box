@@ -1,0 +1,29 @@
+.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+  height: 35px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.ant-select-single .ant-select-selector .ant-select-selection-item {
+  line-height: 34px;
+}
+
+
+.list_Header {
+  display: flex;
+  justify-content: space-around;
+}
+.sousuo {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.list_footer {
+  width: 95%;
+  text-align: center;
+  position: absolute;
+  bottom: 10px;
+}
+
+.ant-divider-horizontal {
+  margin: 15px 0;
+}

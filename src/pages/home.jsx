@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, Button, Checkbox, Row, Col, Input, Spin, message } from 'antd';
+import { Select, Button, Checkbox, Row, Col, Input, Spin, message, Image } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import * as dd from 'dingtalk-jsapi';
 
@@ -9,10 +9,14 @@ import './home.css';
 const checkboxArrs = [];      //储存选择按钮选中的数据
 const newCheckboxArrs = [];   //合并已经储存的按钮选中的数组
 const moneyArrs = [];         //价格数组
-const newMoneyArr = [];       //合并后的价格数组
+let allGuigeArrs = [];       //存储选中规格的所有属性到对象，并追加到数组
+
+let AallGuigeArrs = [];
+
+let storageIdArrs = [];     //储存选中按钮 选中的规格id
+let storageMoneyArrs = [];
 
 let defaultValueArr = [];   // 点击选中按钮，默认选中数组
-let num = 0;
 
 // 成本添加
 let o = 0;
@@ -21,7 +25,7 @@ let o = 0;
 const chongfuArr = [];
 
 
-function Home() {
+function Home(props) {
 
   // 储存的一级数据
   const [oneData, setOneData] = useState(null);
@@ -33,16 +37,21 @@ function Home() {
 
   // 储存选中包装盒的id
   const [storageId, setStorageId] = useState(null);
-  // 图片
-  const [boxImg, setBoxImg] = useState(null);
   // 储存选中包装盒的价格
   const [storageMoney, setStorageMoney] = useState(null);
+  // 储存选中包装盒的物料编号
+  const [storageBianhao, setStorageBianhao] = useState(null);
+  // 储存选中规格的图片
+  const [storageImg, setStorageImg] = useState(null);
 
   // 显示到多选框
   const [twoValue, setTwoValue] = useState(null);
   const [threeValue, setThreeValue] = useState(null);
-  // 合并多选框数组
-  const [concatArr, setConcatArr] = useState(null);
+
+  const [sallGuigeArrs, setallGuigeArrs] = useState(null);
+  const [sstorageIdArrs, setStorageIdArrs] = useState(null);
+  // 储存多选中的数据
+  const [checkedValues, setCheckedValues] = useState(null);
   // 合并价格数组并保存到state
   const [concatMoneyArr, setConcatMoneyArr] = useState(null);
 
@@ -50,12 +59,14 @@ function Home() {
   const [clockState, setClockState] = useState(false);
 
   // 去重id
-  const [defaultValueArrs, setDefaultValueArrs] = useState(defaultValueArr);
+  const [defaultValueArrs, setDefaultValueArrs] = useState(null);
 
   // 成本价
   const [costPrice, setCostPrice] = useState(0);
   // 包装方案名state
   const [inputVal, setInputVal] = useState('');
+  // loading
+  const [spinning, setSpinning] = useState(false);
 
 
   const { Option } = Select;
@@ -96,6 +107,10 @@ function Home() {
     
     
   },[])
+
+  function handleBack() {
+    props.history.push({ pathname: "/" });
+  }
   
 
   // 一级分类盒回调函数 次类
@@ -135,10 +150,8 @@ function Home() {
       if ( key === value ) {
         setThreeData(twoData[key]);
         console.log(twoData[key]);
-
       }
     }
-    console.log(defaultValueArr);
 
   }
 
@@ -148,11 +161,11 @@ function Home() {
     // 储存三级分类选中的value
     setThreeValue(value);
     
-    console.log(chongfuArr);
+    // console.log(value);
 
     setClockState(true); //setClockState状态为false 无法选择规格
 
-    for (let j = 0; j < defaultValueArr.length; j++) {
+    for (let j = 0; j < storageIdArrs.length; j++) {
       
       if ( chongfuArr[j] === value ) {
 
@@ -168,11 +181,15 @@ function Home() {
     // 遍历二级类目下的数据，获取三级类目的规格数据
     for (let i = 0; i < threeData.length; i++) {
       if ( threeData[i].规格 + threeData[i].单位 + threeData[i].单价 === value ) {
-        console.log(threeData[i].id);
+        // console.log(threeData[i].id);
         // 储存规格id
         setStorageId(threeData[i].id);
         // 储存规格价格
         setStorageMoney(threeData[i].单价);
+        // 储存规格编号
+        setStorageBianhao(threeData[i].物料编号);
+        // 储存规格图片
+        setStorageImg(threeData[i].img);
 
       }
     }
@@ -180,35 +197,71 @@ function Home() {
   }
   
   // 选择函数，选择将确定的规格存入数组中，后将遍历到eslect
+  let guigeObj = {};
+  let money = 0;
   function handleOk() {
-    // console.log( twoValue + threeValue );
+
     // console.log("点击了选择按钮" + storageId);
 
     if ( clockState ) {
 
-      // console.log(threeValue);
+      // console.log( twoValue );
+      // console.log( threeValue );
+      // console.log(storageBianhao);
+      // console.log( storageId );
+      // console.log(storageMoney);
+      // 储存规格所有数据到对象中
+      guigeObj.twoValue = twoValue;
+      guigeObj.threeValue = threeValue;
+      guigeObj.storageBianhao = storageBianhao;
+      guigeObj.storageId = storageId;
+      guigeObj.storageImg = storageImg;
+      guigeObj.storageMoney = parseFloat(storageMoney);
+      // console.log(guigeObj);
+      // 将添加的多选框数据追加到数组中
+      allGuigeArrs.push(guigeObj);
+      setallGuigeArrs(allGuigeArrs);
+
+      storageIdArrs.push(guigeObj.storageId);
+      // setStorageIdArrs(storageIdArrs.concat(newstorageIdArrss));
+
+      storageMoneyArrs.push(guigeObj.storageMoney);
+
+      for (let i = 0; i < storageMoneyArrs.length; i++) {
+        money += storageMoneyArrs[i];
+        
+      }
+      // console.log(money.toFixed(4));
+      setCostPrice(money.toFixed(4));
+      console.log(allGuigeArrs);
+      console.log(storageIdArrs);
+      console.log(storageMoneyArrs);
+
+
       chongfuArr.push(threeValue);
-      console.log(chongfuArr);
+      // console.log(chongfuArr);
+      // 合并 判断重复 数组
+      // chongfuArrs.concat(chongfuArr);
+      // console.log(chongfuArrs);
 
       // 将选中的数据追加到数组
-      checkboxArrs.push(storageId + twoValue + threeValue);
+      // checkboxArrs.push(storageId + twoValue + threeValue);
       // 合并数组
-      setConcatArr(checkboxArrs.concat(newCheckboxArrs));
+      // setConcatArr(checkboxArrs.concat(newCheckboxArrs));
       
       // 储存价格到数组中
-      moneyArrs.push(storageMoney);
+      // moneyArrs.push(storageMoney);
       // 合并价格数组 并保存
       // setConcatMoneyArr(moneyArrs.concat(newMoneyArr));
-      console.log(moneyArrs);
-      console.log(parseFloat(storageMoney));
+      // console.log(moneyArrs);
+      // console.log(parseFloat(storageMoney));
       o += parseFloat(storageMoney)
       setCostPrice(o.toFixed(4));
 
       // 循环截取出包装盒id ，后选中按钮点击默认显示
-      defaultValueArr.push(checkboxArrs[num].slice(0,2));
-      num++;
-      console.log(defaultValueArr);
-
+      // defaultValueArr.push(checkboxArrs[num].slice(0,2));
+      // num++;
+      // console.log(defaultValueArr);
       setClockState(false); //setClockState状态为false 无法选择规格
 
     }else {
@@ -222,18 +275,23 @@ function Home() {
   let sum = 0;
   function onChangea(checkedValues) {
 
-    console.log(concatArr);
+    // storageIdArrs = checkedValues;
 
-    // console.log(defaultValueArr);
-    // concatArr = checkedValues;
-    defaultValueArr = checkedValues;
+    for (let i = 0; i < checkedValues.length; i++) {
+      sum += checkedValues[i];  //多选储存新价格
+
+    }
+    // 多选价格更变储存
+    setCostPrice(sum.toFixed(4));
+    // setStorageIdArrs(allGuigeId.concat(storageIdArrs));
+
+    setCheckedValues(checkedValues);
+
+    // console.log(AallGuigeArrs)
+    // console.log(allGuigeArrs);
     // console.log(checkedValues);
-    console.log(defaultValueArr);
-    // o = sum;
+    console.log(storageMoneyArrs);
 
-  }
-  function onCheckAllChange(params) {
-    
   }
 
   // 方案名 input回调取值
@@ -244,12 +302,91 @@ function Home() {
   }
 
   // 保存按钮
+  let allGuigeId = [];    //储存选中的id ，将要传给后端
   function handlePreservation() {
-
-    console.log(`方案包装名：${inputVal}`);
-
+    // 传入id数组
+    // console.log(sstorageIdArrs);
+    // console.log(storageIdArrs);
+    // console.log(checkedValues);
+// console.log(props.location.state)
+    // console.log(checkedValues);
     if ( inputVal ) {
       // true 遮罩显示
+      
+      if ( checkedValues ) {
+        
+        for (let i = 0; i < allGuigeArrs.length; i++) {
+
+          for (let j = 0; j < checkedValues.length; j++) {
+
+            if ( allGuigeArrs[i].storageMoney === checkedValues[j] ) {
+              allGuigeId.push(allGuigeArrs[i].storageId);
+              console.log(allGuigeArrs[i].storageId);
+            }
+          }
+        }
+        // 更改loding状态
+        setSpinning(true);
+
+        axios.post('/kaopin/bom/add',{
+          'details': allGuigeId.join(","),        //传入的id
+          'plan_name': inputVal,        //计划名称
+          'plan_type': props.location.state,
+          'total_price': costPrice,
+        })
+        .then(function (res) {
+          if ( res.data.status ) {
+            message.warning(res.data.msg);
+            setSpinning(false);
+            // 刷新页面
+            window.location.reload();
+    
+          } else {
+            message.warning(res.data.msg);
+            // 更改loding状态
+            setSpinning(false);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          // 更改loding状态
+          setSpinning(false);
+        });
+
+        
+      }else {
+        
+        // 更改loding状态
+        setSpinning(true);
+
+        axios.post('/kaopin/bom/add',{
+          'details': storageIdArrs.join(","),        //传入的id
+          'plan_name': inputVal,        //计划名称
+          'plan_type': props.location.state,
+          'total_price': costPrice,
+        })
+        .then(function (res) {
+          if ( res.data.status ) {
+            message.warning(res.data.msg);
+            setSpinning(false);
+            // 刷新页面
+            window.location.reload();
+    
+          } else {
+            message.warning(res.data.msg);
+            // 更改loding状态
+            setSpinning(false);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          // 更改loding状态
+          setSpinning(false);
+        });
+
+      }
+
+      
 
     } else {
 
@@ -262,35 +399,40 @@ function Home() {
 
   return(
     <div style={{ height: '100%' }}>
-      <Spin spinning={false} tip="Loading...">
-        <header className='header'>包装BOM</header>
+      <Spin spinning={spinning} tip="Loading...">
+        <header className='header'>
+          <span className="fanhui" onClick={handleBack}>＜返回</span>
+        包装BOM
+        </header>
         <div className='box'>
           {/* 一级分类盒 */}
-          <Select className="select_one" defaultValue="主类" style={{ width: 140 }} onChange={handleChangeOne}>
-            {
-              oneData ?
-                oneData.map((item, index) =>{
+          <div style={{ display: 'flex' }}>
+            <Select className="select_one" defaultValue="主类" style={{ width: 140 }} onChange={handleChangeOne}>
+              {
+                oneData ?
+                  oneData.map((item, index) =>{
+                    return(
+                      <Option key={index} value={item}>{item}</Option>
+                    )
+                  })
+                :
+                  ''
+              }
+            </Select>
+            {/* 二级分类,次类 具体商品盒 */}
+            <Select defaultValue="次类" style={{ width: 220 }} onChange={handleChangeTwo}>
+              {
+                twoData ?
+                Object.keys(twoData).map((key, index) => {
                   return(
-                    <Option key={index} value={item}>{item}</Option>
+                    <Option key={index} value={key}>{key}</Option>
                   )
                 })
-              :
-                ''
-            }
-          </Select>
-          {/* 二级分类,次类 具体商品盒 */}
-          <Select defaultValue="次类" style={{ width: 220 }} onChange={handleChangeTwo}>
-            {
-              twoData ?
-              Object.keys(twoData).map((key, index) => {
-                return(
-                  <Option key={index} value={key}>{key}</Option>
-                )
-              })
-              :
-              ""
-            }
-          </Select>
+                :
+                ""
+              }
+            </Select>
+          </div>
           {/* 三级分类,规格 */}
           <div className="specification">
             <Select className="select_three" defaultValue="规格" style={{ width: 280 }} onChange={handleChangeThree}>
@@ -309,17 +451,25 @@ function Home() {
           </div>
           {/* 多选框 */}
           <div className="specification_pull_down">
-            {/* defaultValue={defaultValueArr} */}
-            <Checkbox.Group defaultValue={defaultValueArr} style={{ width: '100%' }} onChange={onChangea}>
+            {/*  defaultValue={storageIdArrs} */}
+            <Checkbox.Group defaultValue={storageMoneyArrs} style={{ width: '100%' }} onChange={onChangea}>
               <Row>
                 {
-                  concatArr ?
-                    concatArr.map((item, index) => {
-                      console.log(defaultValueArr);
-                      console.log(item.slice(0,2));
+                  sallGuigeArrs ?
+                    sallGuigeArrs.map((item, index) => {
+                      // console.log(item);
                       return(
                         <Col key={index}>
-                          <Checkbox value={item.slice(0,2)}>{item.slice(2)}</Checkbox>
+                        <Image
+                          src={item.storageImg}
+                          className="homeImg"
+                        />
+                          <Checkbox style={{ display: 'flex', alignItems: 'center' }} value={item.storageMoney}>
+                            <div className="guige">
+                              {/* <img src={item.storageImg} alt="规格图"/> */}
+                              <p>{item.twoValue + item.threeValue }</p>
+                            </div>
+                          </Checkbox>
                         </Col>
                       )
                     })
@@ -328,6 +478,7 @@ function Home() {
                 }
               </Row>
             </Checkbox.Group>
+
           </div>
         </div>
 

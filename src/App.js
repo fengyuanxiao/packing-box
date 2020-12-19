@@ -1,11 +1,18 @@
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
 import Home from './pages/home';
+import Lists from './pages/lists';
 
 
 function App() {
   return (
-    <div style={{ height: '100%' }}>
-      <Home/>
-    </div>
+    <Router>
+      <div style={{ height: '100%' }}>
+        <Route exact path="/" component={Lists} />
+        <Route path="/Home" component={Home} />
+        {/* <Home/> */}
+      </div>
+    </Router>
   );
 }
 

@@ -14,6 +14,12 @@
   padding: 0.5rem 0 0.5rem 0;
   margin-bottom: 1rem;
 }
+.fanhui {
+  position: absolute;
+  left: 0;
+  font-size: 1rem;
+  top: 10px;
+}
 
 .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
   height: 40px;
@@ -27,6 +33,7 @@
 }
 
 .specification {
+  display: flex;
   margin-top: 1rem;
   margin-bottom: 1.3rem;
 }
@@ -47,14 +54,21 @@
 
 .ant-col {
   padding: 0.5rem 0 0.5rem 0rem;
+  position:relative;
+}
+.ant-image {
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 .guige {
   display: flex;
   align-items: center;
 }
-.guige > img {
+.homeImg {
   width: 50px;
   margin: 0 10px 0 15px;
+  z-index: 99999;
 }
 .specification_pull_down {
   height: 440px;
@@ -76,6 +90,9 @@
   border-radius: 10px;
   background-color: #fd8383;
   border-color: #fd8383;
+}
+.ant-checkbox + span {
+  margin-left: 70px;
 }
 
 .footer {
@@ -99,7 +116,7 @@
   position: absolute;
   content: ' ';
   top: 15px;
-  left: 225px;
+  left: 55%;
   transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   -webkit-transform: rotate(-90deg);
