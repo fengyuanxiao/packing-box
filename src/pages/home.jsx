@@ -2,21 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Select, Button, Checkbox, Row, Col, Input, Spin, message, Image } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import * as dd from 'dingtalk-jsapi';
 
+import '../api/api';
 import './home.css';
 
-const checkboxArrs = [];      //储存选择按钮选中的数据
-const newCheckboxArrs = [];   //合并已经储存的按钮选中的数组
-const moneyArrs = [];         //价格数组
 let allGuigeArrs = [];       //存储选中规格的所有属性到对象，并追加到数组
 
-let AallGuigeArrs = [];
 
 let storageIdArrs = [];     //储存选中按钮 选中的规格id
 let storageMoneyArrs = [];
 
-let defaultValueArr = [];   // 点击选中按钮，默认选中数组
 
 // 成本添加
 let o = 0;
@@ -51,17 +46,11 @@ function Home(props) {
   const [threeValue, setThreeValue] = useState(null);
 
   const [sallGuigeArrs, setallGuigeArrs] = useState(null);
-  const [sstorageIdArrs, setStorageIdArrs] = useState(null);
   // 储存多选中的数据
   const [checkedValues, setCheckedValues] = useState(null);
-  // 合并价格数组并保存到state
-  const [concatMoneyArr, setConcatMoneyArr] = useState(null);
 
   // 没有选择规格，却点击选中按钮 判断
   const [clockState, setClockState] = useState(false);
-
-  // 去重id
-  const [defaultValueArrs, setDefaultValueArrs] = useState(null);
 
   // 成本价
   const [costPrice, setCostPrice] = useState(0);
@@ -75,22 +64,13 @@ function Home(props) {
 
   useEffect(()=> {
 
-    // dd.runtime.permission.requestAuthCode({
-    //   corpId: "dingd3bd415677f4c851",
-    //   onSuccess: function(result) {
-    //     console.log(result)
-    //   /*{
-    //       code: 'hYLK98jkf0m' //string authCode
-    //   }*/
-    //   },
-    //   onFail : function(err) {}
-   
-    // })
-
     // 获取主类
     axios.post('/kaopin/bom/getCategory',{
       'wuliao_type': '',
       'cate_type': 1
+    },
+    {
+      headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
     })
     .then(function (res) {
       if ( res.data.status ) {
@@ -118,18 +98,21 @@ function Home(props) {
   // 一级分类盒回调函数 次类
   function handleChangeOne(value) {
 
-      console.log(value);
+      // console.log(value);
     // 获取次类
     axios.post('/kaopin/bom/getCategory',{
       'wuliao_type': value,
       'cate_type': 1
+    },
+    {
+      headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
     })
     .then(function (res) {
       if ( res.data.status ) {
         
         // 储存一级分类获取的二级分类数据
         setTwoData(res.data.data);
-        console.log(res.data.data);
+        // console.log(res.data.data);
 
       } else {
         message.warning(res.data.msg);
@@ -151,7 +134,7 @@ function Home(props) {
     for (const key in twoData) {
       if ( key === value ) {
         setThreeData(twoData[key]);
-        console.log(twoData[key]);
+        // console.log(twoData[key]);
       }
     }
 
@@ -175,7 +158,7 @@ function Home(props) {
         setClockState(false); //setClockState状态为false 无法选择规格
 
       }else {
-        console.log('继续');
+        // console.log('继续');
       }
       
     }
@@ -294,9 +277,9 @@ function Home(props) {
     // console.log(AallGuigeArrs)
     // console.log(allGuigeArrs);
     // console.log(checkedValues);
-    console.log(storageMoneyArrs);
+    // console.log(storageMoneyArrs);
     // setStorageMoneyArrs(checkedValues);
-    console.log(AstorageMoneyArrs);
+    // console.log(AstorageMoneyArrs);
 
   }
 
@@ -327,7 +310,7 @@ function Home(props) {
 
             if ( allGuigeArrs[i].storageMoney === checkedValues[j] ) {
               allGuigeId.push(allGuigeArrs[i].storageId);
-              console.log(allGuigeArrs[i].storageId);
+              // console.log(allGuigeArrs[i].storageId);
             }
           }
         }
@@ -339,6 +322,9 @@ function Home(props) {
           'plan_name': inputVal,        //计划名称
           'plan_type': props.location.state,
           'total_price': costPrice,
+        },
+        {
+          headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
         })
         .then(function (res) {
           if ( res.data.status ) {
@@ -370,6 +356,9 @@ function Home(props) {
           'plan_name': inputVal,        //计划名称
           'plan_type': props.location.state,
           'total_price': costPrice,
+        },
+        {
+          headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
         })
         .then(function (res) {
           if ( res.data.status ) {

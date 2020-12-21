@@ -27,3 +27,16 @@
 .ant-divider-horizontal {
   margin: 15px 0;
 }
+
+.ant-list-pagination {
+  text-align: center;
+}
+
+.details {
+  display: flex;
+  margin-bottom: 10px;
+}
+.details > img {
+  width: 50px;
+  margin-right: 15px;
+}
