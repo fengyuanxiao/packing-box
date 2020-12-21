@@ -15,7 +15,7 @@ function Lists(props) {
 
   const { Option } = Select;
 
-  const [listData, setListData] = useState(null);
+  const [listData, setListData] = useState([]);
 
   useEffect(() => {
     
@@ -26,6 +26,7 @@ function Lists(props) {
     .then(function (res) {
       if ( res.data.status ) {
         console.log(res.data.data.result);
+        console.log(res.data.data);
         // 储存获取list数据
         setListData(res.data.data.result);
 
@@ -56,6 +57,11 @@ function handleChange(value) {
   console.log(`selected ${value}`);
 }
 
+function handleChangePage(page, pageSize) {
+  console.log(page);
+  console.log(pageSize);
+}
+
   
   return(
     <div style={{ height: '100%' }}>
@@ -80,14 +86,13 @@ function handleChange(value) {
 
         <div>
           {
-            listData ?
+            listData !== null ?
             <List
               itemLayout="horizontal"
               dataSource={listData}
               renderItem={item => (
                 <List.Item>
                   <List.Item.Meta
-                    // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
                     title={item.plan_name}
                     description={item.total_price}
                   />
@@ -97,7 +102,7 @@ function handleChange(value) {
             :
             <List
               itemLayout="horizontal"
-              dataSource={listData}
+              dataSource={data}
               renderItem={item => (
                 <List.Item>
                   <List.Item.Meta
@@ -112,7 +117,7 @@ function handleChange(value) {
         </div>
 
         <div className="list_footer">
-          <Pagination defaultCurrent={1} total={50} />
+          <Pagination onChange={handleChangePage} defaultPageSize={3} defaultCurrent={1} total={listData.length} />
         </div>
       </div>
     </div>

@@ -44,6 +44,8 @@ function Home(props) {
   // 储存选中规格的图片
   const [storageImg, setStorageImg] = useState(null);
 
+  const [AstorageMoneyArrs, setStorageMoneyArrs] = useState(null);
+
   // 显示到多选框
   const [twoValue, setTwoValue] = useState(null);
   const [threeValue, setThreeValue] = useState(null);
@@ -226,6 +228,8 @@ function Home(props) {
       // setStorageIdArrs(storageIdArrs.concat(newstorageIdArrss));
 
       storageMoneyArrs.push(guigeObj.storageMoney);
+      // setStorageMoneyArrs(storageMoneyArrs);
+      // console.log(AstorageMoneyArrs);
 
       for (let i = 0; i < storageMoneyArrs.length; i++) {
         money += storageMoneyArrs[i];
@@ -291,6 +295,8 @@ function Home(props) {
     // console.log(allGuigeArrs);
     // console.log(checkedValues);
     console.log(storageMoneyArrs);
+    // setStorageMoneyArrs(checkedValues);
+    console.log(AstorageMoneyArrs);
 
   }
 
