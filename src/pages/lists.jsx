@@ -13,7 +13,10 @@ const data = [
   }
 ];
 
+
 function Lists(props) {
+  localStorage.setItem("ns", 1);
+  localStorage.removeItem("n");
 
   const { Option } = Select;
 
@@ -154,13 +157,21 @@ function Lists(props) {
   },[])
 
 function handleHoudao() {
-  // console.log('添加后道包装');
+  // console.log('添加后道包装2');
+
+  localStorage.setItem("n", localStorage.getItem("ns") + 1);
   props.history.push({ pathname: "/home", state: 2 });
+  // document.getElementById('root').title('后道包装');
+
 }
 
 function handleFahuo() {
-  // console.log("添加发货包装");
+  // console.log("添加发货包装1");
+
+  localStorage.setItem("n", localStorage.getItem("ns") + 1);
   props.history.push({ pathname: "/home", state: 1 });
+  // document.getElementById('root').title('发货包装');
+  // document
   
 }
 

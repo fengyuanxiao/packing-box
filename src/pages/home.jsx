@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, Button, Checkbox, Row, Col, Input, Spin, message, Image } from 'antd';
+import { Select, Button, Checkbox, Row, Col, Input, Spin, message, Image, Modal } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 
 import '../api/api';
 import './home.css';
 
+
 let allGuigeArrs = [];       //存储选中规格的所有属性到对象，并追加到数组
+// 判断是否选中重复
+let chongfuArr = [];
+
 
 
 let storageIdArrs = [];     //储存选中按钮 选中的规格id
@@ -16,11 +20,22 @@ let storageMoneyArrs = [];
 // 成本添加
 let o = 0;
 
-// 判断是否选中重复
-const chongfuArr = [];
 
 
 function Home(props) {
+  // console.log(props);
+
+  // 判断从首页跳转，清空储存规格数组数据
+  if ( localStorage.getItem("n") === '11' ) {
+  allGuigeArrs = [];       //存储选中规格的所有属性到对象，并追加到数组
+  chongfuArr = [];
+  // console.log(allGuigeArrs);
+  // console.log(chongfuArr);
+  localStorage.setItem("n", 2);
+  }
+
+  // 一定要输入方案名
+  const [changeInputVals, setChangeInputVal] = useState(null);
 
   // 储存的一级数据
   const [oneData, setOneData] = useState(null);
@@ -67,7 +82,7 @@ function Home(props) {
     // 获取主类
     axios.post(global.constants.website+'/kaopin/bom/getCategory',{
       'wuliao_type': '',
-      'cate_type': 1
+      'cate_type': props.location.state,
     },
     {
       headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
@@ -97,9 +112,25 @@ function Home(props) {
     
   },[])
 
-  // function handleBack() {
-  //   props.history.push({ pathname: "/" });
-  // }
+  // 方案名对话框控制状态
+  const [isModalVisible, setIsModalVisible] = useState(true);
+
+  // 一定要输入方案名
+  function changeInputVal(e) {
+    // console.log(e.target.value);
+    setChangeInputVal(e.target.value);
+  }
+  const handleModalOk = () => { //关闭方案名对话框按钮
+
+    if ( changeInputVals ) {
+
+      // 控制方案名显示状态
+      setIsModalVisible(false);
+
+    }else {
+      message.warning('请输入方案名！');
+    }
+  };
   
 
   // 一级分类盒回调函数 次类
@@ -109,7 +140,7 @@ function Home(props) {
     // 获取次类
     axios.post(global.constants.website+'/kaopin/bom/getCategory',{
       'wuliao_type': value,
-      'cate_type': 1
+      'cate_type': props.location.state,
     },
     {
       headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
@@ -198,6 +229,7 @@ function Home(props) {
   let guigeObj = {};
   let money = 0;
   function handleOk() {
+    console.log(allGuigeArrs);
 
     // console.log("点击了选择按钮" + storageId);
 
@@ -310,11 +342,11 @@ function Home(props) {
   }
 
   // 方案名 input回调取值
-  function handleInputVal(e) {
+  // function handleInputVal(e) {
 
-    // 储存方案包装名
-    setInputVal(e.target.value);
-  }
+  //   // 储存方案包装名
+  //   setInputVal(e.target.value);
+  // }
 
   // 保存按钮
   let allGuigeId = [];    //储存选中的id ，将要传给后端
@@ -323,9 +355,9 @@ function Home(props) {
     // console.log(sstorageIdArrs);
     // console.log(storageIdArrs);
     // console.log(checkedValues);
-// console.log(props.location.state)
+    // console.log(props.location.state)
     // console.log(checkedValues);
-    if ( inputVal ) {
+    if ( changeInputVals ) {
       // true 遮罩显示
       
       if ( checkedValues ) {
@@ -345,7 +377,7 @@ function Home(props) {
 
         axios.post(global.constants.website+'/kaopin/bom/add',{
           'details': allGuigeId.join(","),        //传入的id
-          'plan_name': inputVal,        //计划名称
+          'plan_name': changeInputVals,        //计划名称
           'plan_type': props.location.state,
           'total_price': costPrice,
         },
@@ -386,8 +418,8 @@ function Home(props) {
         setSpinning(true);
 
         axios.post(global.constants.website+'/kaopin/bom/add',{
-          'details': storageIdArrs.join(","),        //传入的id
-          'plan_name': inputVal,        //计划名称
+          'details': storageIdArrs.join(","),         //传入的id
+          'plan_name': changeInputVals,                      //计划名称
           'plan_type': props.location.state,
           'total_price': costPrice,
         },
@@ -437,6 +469,7 @@ function Home(props) {
   return(
     <div style={{ height: '100%' }}>
       <Spin spinning={spinning} tip="Loading...">
+        <header className='header'>{changeInputVals}</header>
         <div className='box'>
           {/* 一级分类盒 */}
           <div style={{ display: 'flex' }}>
@@ -517,17 +550,23 @@ function Home(props) {
 
         {/* bottom */}
         <footer className="footer">
+          <div className="footer_child2">
+            {/* <Input onChange={handleInputVal} style={{ width: 250, marginRight: '17px', borderRadius: '7px' }} placeholder="请输入包装方案名" /> */}
+            <Button onClick={handlePreservation} className="select_btn" type="primary">保存选择</Button>
+          </div>
           <div className='moneys'>
             <ExclamationCircleFilled style={{ color: 'red' }} />
             <div className="e">总成本：{costPrice}</div>
           </div>
-          <div className="footer_child2">
-            <Input onChange={handleInputVal} style={{ width: 250, marginRight: '17px', borderRadius: '7px' }} placeholder="请输入包装方案名" />
-            <Button onClick={handlePreservation} className="select_btn" type="primary">保存选择</Button>
-          </div>
         </footer>
 
       </Spin>
+      {/* 弹框输入方案名 */}
+          <Modal title="必须输入方案名！" closable={false} visible={isModalVisible} footer={[
+            <Button key="back" type="primary" onClick={handleModalOk}>确定</Button>,
+          ]}>
+        <Input onChange={changeInputVal} placeholder="请输入包装方案名：" />
+      </Modal>
     </div>
   )
 }
