@@ -65,7 +65,7 @@ function Home(props) {
   useEffect(()=> {
 
     // 获取主类
-    axios.post('/kaopin/bom/getCategory',{
+    axios.post(global.constants.website+'/kaopin/bom/getCategory',{
       'wuliao_type': '',
       'cate_type': 1
     },
@@ -74,9 +74,16 @@ function Home(props) {
     })
     .then(function (res) {
       if ( res.data.status ) {
-        // 储存获取的主类数据
-        setOneData(res.data.data);
-        // console.log(res.data.data);
+
+        if ( res.data.msg === "token error" ) {
+          props.history.push({ pathname: "/" });
+  
+        } else {
+          
+          // 储存获取的主类数据
+          setOneData(res.data.data);
+          
+        }
 
       } else {
         message.warning(res.data.msg);
@@ -100,7 +107,7 @@ function Home(props) {
 
       // console.log(value);
     // 获取次类
-    axios.post('/kaopin/bom/getCategory',{
+    axios.post(global.constants.website+'/kaopin/bom/getCategory',{
       'wuliao_type': value,
       'cate_type': 1
     },
@@ -109,10 +116,16 @@ function Home(props) {
     })
     .then(function (res) {
       if ( res.data.status ) {
-        
-        // 储存一级分类获取的二级分类数据
-        setTwoData(res.data.data);
-        // console.log(res.data.data);
+
+        if ( res.data.msg === "token error" ) {
+          props.history.push({ pathname: "/" });
+  
+        } else {
+          
+          // 储存一级分类获取的二级分类数据
+          setTwoData(res.data.data);
+          
+        }
 
       } else {
         message.warning(res.data.msg);
@@ -165,7 +178,7 @@ function Home(props) {
 
     // 遍历二级类目下的数据，获取三级类目的规格数据
     for (let i = 0; i < threeData.length; i++) {
-      if ( threeData[i].规格 + threeData[i].单位 + threeData[i].单价 === value ) {
+      if ( threeData[i].规格 + "￥" + threeData[i].单价 + "/" + threeData[i].单位 === value ) {
         // console.log(threeData[i].id);
         // 储存规格id
         setStorageId(threeData[i].id);
@@ -208,6 +221,7 @@ function Home(props) {
       setallGuigeArrs(allGuigeArrs);
 
       storageIdArrs.push(guigeObj.storageId);
+      // console.log(guigeObj.storageId);
       // setStorageIdArrs(storageIdArrs.concat(newstorageIdArrss));
 
       storageMoneyArrs.push(guigeObj.storageMoney);
@@ -220,9 +234,9 @@ function Home(props) {
       }
       // console.log(money.toFixed(4));
       setCostPrice(money.toFixed(4));
-      console.log(allGuigeArrs);
-      console.log(storageIdArrs);
-      console.log(storageMoneyArrs);
+      // console.log(allGuigeArrs);
+      // console.log(storageIdArrs);
+      // console.log(storageMoneyArrs);
 
 
       chongfuArr.push(threeValue);
@@ -317,7 +331,7 @@ function Home(props) {
         // 更改loding状态
         setSpinning(true);
 
-        axios.post('/kaopin/bom/add',{
+        axios.post(global.constants.website+'/kaopin/bom/add',{
           'details': allGuigeId.join(","),        //传入的id
           'plan_name': inputVal,        //计划名称
           'plan_type': props.location.state,
@@ -328,10 +342,18 @@ function Home(props) {
         })
         .then(function (res) {
           if ( res.data.status ) {
-            message.warning(res.data.msg);
-            setSpinning(false);
-            // 刷新页面
-            window.location.reload();
+
+            if ( res.data.msg === "token error" ) {
+              props.history.push({ pathname: "/" });
+      
+            } else {
+              
+              message.warning(res.data.msg);
+              setSpinning(false);
+              // 刷新页面
+              window.location.reload();
+              
+            }
     
           } else {
             message.warning(res.data.msg);
@@ -351,7 +373,7 @@ function Home(props) {
         // 更改loding状态
         setSpinning(true);
 
-        axios.post('/kaopin/bom/add',{
+        axios.post(global.constants.website+'/kaopin/bom/add',{
           'details': storageIdArrs.join(","),        //传入的id
           'plan_name': inputVal,        //计划名称
           'plan_type': props.location.state,
@@ -362,10 +384,18 @@ function Home(props) {
         })
         .then(function (res) {
           if ( res.data.status ) {
-            message.warning(res.data.msg);
-            setSpinning(false);
-            // 刷新页面
-            window.location.reload();
+
+            if ( res.data.msg === "token error" ) {
+              props.history.push({ pathname: "/" });
+      
+            } else {
+              
+              message.warning(res.data.msg);
+              setSpinning(false);
+              // 刷新页面
+              window.location.reload();
+              
+            }
     
           } else {
             message.warning(res.data.msg);
@@ -435,7 +465,7 @@ function Home(props) {
                 threeData ?
                   threeData.map((item, index) => {
                     return(
-                      <Option key={index} value={item.规格 + item.单位 + item.单价}>{item.规格 + item.单位 + item.单价}</Option>
+                      <Option key={index} value={item.规格 + "￥" + item.单价 + "/" + item.单位}>{item.规格 + "￥" + item.单价 + "/" + item.单位}</Option>
                     )
                   })
                 :

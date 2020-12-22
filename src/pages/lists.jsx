@@ -56,72 +56,74 @@ function Lists(props) {
 
 
     // 钉钉判断
-    // if ( dd.env.platform !== 'notInDingTalk' ) {  //是否在钉钉环境中
-    //   // console.log(dd);
-    //   dd.runtime.permission.requestAuthCode({
-    //     corpId: "dingd3bd415677f4c851",
-    //     onSuccess: function(info) {
-    //       // console.log(info.code);
-    //       // code = info.code // 通过该免登授权码可以获取用户身份
+    if ( dd.env.platform !== 'notInDingTalk' ) {  //是否在钉钉环境中
+      // console.log(dd);
+      dd.runtime.permission.requestAuthCode({
+        corpId: "dingd3bd415677f4c851",
+        onSuccess: function(info) {
+          // console.log(info.code);
+          // code = info.code // 通过该免登授权码可以获取用户身份
 
-    //       // 调用获取token
-    //       axios.post('/kaopin/bom/getUser',{
-    //         'code': info.code,  // 通过该免登授权码可以获取用户身份
-    //       })
-    //       .then(function (res) {
-    //         console.log(res);
-    //         if ( res.status === 200 ) {
-    //           // 获取 存储token
-    //           localStorage.setItem("token", res.data.data);
-    //           console.log(res.data.data);
+          // 调用获取token
+          axios.post(global.constants.website+'/kaopin/bom/getUser',{
+            'code': info.code,  // 通过该免登授权码可以获取用户身份
+          })
+          .then(function (res) {
+            // console.log(res);
+            if ( res.status === 200 ) {
+              // 获取 存储token
+              localStorage.setItem("token", res.data.data);
+              // console.log(res.data.data);
       
-    //         } else {
-    //           message.warning(res.data.msg);
-    //         }
-    //         // console.log(res.data);
-    //       })
-    //       .catch(function (error) {
-    //         console.log(error);
-    //       });
-    //     },
-    //     onFail : function(err) {}
+            } else {
+              message.warning(res.data.msg);
+            }
+            // console.log(res.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        },
+        onFail : function(err) {}
     
-    //   })
+      })
 
-    // } else {
-    //   console.log('请在手机上打开操作！')
-    // }
+    } else {
+      message.warning('请在手机上打开操作！');
+    }
     
     // 获取列表
-    axios.post('/kaopin/bom/index',{
+    axios.post(global.constants.website+'/kaopin/bom/index',{
       'page': 1,
     },
     {
       headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
     })
     .then(function (res) {
-      console.log(res.data);
+      // console.log(res);
       if ( res.data.status ) {
-        // if ( res.data.msg === "token error" ) {
+        if ( res.data.msg === "token error" ) {
+          props.history.push({ pathname: "/" });
+
+        } else {
+          setSpinning(false);
+          // console.log(res.data);
+          // console.log(res.data.data);
+          // console.log(res.data.data.result);
+          // 储存获取list数据
+          setListData(res.data.data.result);
           
-        // } else {
-          
-        // }
-        setSpinning(false);
-        console.log(res.data);
-        console.log(res.data.data);
-        console.log(res.data.data.result);
-        // 储存获取list数据
-        setListData(res.data.data.result);
+        }
 
       } else {
-        // message.warning(res.data.msg);
+        props.history.push({ pathname: "/" });
+        message.warning(res.data.msg);
       }
       // console.log(res.data);
     })
     .catch(function (error) {
-      props.history.push({ pathname: "/" });
-      console.log(error);
+      // props.history.push({ pathname: "/" });
+      message.warning(error);
       // setSpinning(false);
     });
 
@@ -148,7 +150,7 @@ function nameChange(e) {
     
     setSpinning(true);
     // 获取列表
-    axios.post('/kaopin/bom/index',{
+    axios.post(global.constants.website+'/kaopin/bom/index',{
       'page': 1,
     },
     {
@@ -156,11 +158,18 @@ function nameChange(e) {
     })
     .then(function (res) {
       if ( res.data.status ) {
-        setSpinning(false);
-        console.log(res.data.data.result);
-        console.log(res.data.data);
-        // 储存获取list数据
-        setListData(res.data.data.result);
+        
+        if ( res.data.msg === "token error" ) {
+          props.history.push({ pathname: "/" });
+
+        } else {
+          setSpinning(false);
+          console.log(res.data.data.result);
+          console.log(res.data.data);
+          // 储存获取list数据
+          setListData(res.data.data.result);
+          
+        }
 
       } else {
         message.warning(res.data.msg);
@@ -188,7 +197,7 @@ function handleSearch() {
   
     setSpinning(true);
     // 获取列表
-    axios.post('/kaopin/bom/index',{
+    axios.post(global.constants.website+'/kaopin/bom/index',{
       'page': 1,
       'plan_name': schemName,
       'plan_type': functionName,
@@ -200,11 +209,19 @@ function handleSearch() {
       if ( res.data.status ) {
 
         if ( res.data.data.result.length ) {
+
+          if ( res.data.msg === "token error" ) {
+            props.history.push({ pathname: "/" });
+  
+          } else {
+
+            setSpinning(false);
+            // console.log(res.data.data.result);
+            // 储存获取list数据
+            setListData(res.data.data.result);
+            
+          }
           
-          setSpinning(false);
-          // console.log(res.data.data.result);
-          // 储存获取list数据
-          setListData(res.data.data.result);
 
         }else {
           
@@ -238,7 +255,7 @@ function delItem(id) {
   // 点击列表获取对应详情是，加载logding
   setSpinning(true);
   // console.log(id);
-  axios.post('/kaopin/bom/details',{
+  axios.post(global.constants.website+'/kaopin/bom/details',{
     'id': id,
   },
   {
@@ -247,13 +264,21 @@ function delItem(id) {
   .then(function (res) {
 
     if ( res.data.status ) {
-      // 更改详情对话框状态，true 为显示
-      setIsModalVisible(true);
-      // 详情获取成功lognding也将改成false
-      setSpinning(false);
-      // console.log(res.data.data);
-      // 储存列表详情数据
-      setDetails(res.data.data);
+
+      if ( res.data.msg === "token error" ) {
+        props.history.push({ pathname: "/" });
+
+      } else {
+        
+        // 更改详情对话框状态，true 为显示
+        setIsModalVisible(true);
+        // 详情获取成功lognding也将改成false
+        setSpinning(false);
+        // console.log(res.data.data);
+        // 储存列表详情数据
+        setDetails(res.data.data);
+        
+      }
 
     } else {
       message.warning(res.data.msg);
@@ -270,6 +295,9 @@ const handleOk = () => {
 
   setIsModalVisible(false);
   
+};
+const handleCancel = () => {
+  setIsModalVisible(false);
 };
 
 message.config({ //更改警告框的位置
@@ -305,7 +333,7 @@ message.config({ //更改警告框的位置
               locale={{emptyText: "暂无该数据"}}
               pagination={{
                 onChange: page => {
-                    console.log(page);
+                    // console.log(page);
                   },
                   pageSize: 7,
               }}
@@ -342,7 +370,7 @@ message.config({ //更改警告框的位置
             details !== null ?
               <Modal title={details.plan_name} footer={[
                 <Button key="back" type="primary" onClick={handleOk}>确定</Button>,
-              ]} visible={isModalVisible}>
+              ]} onCancel={handleCancel} visible={isModalVisible}>
                 {
                   details.details.map((item, index) => {
                     return(

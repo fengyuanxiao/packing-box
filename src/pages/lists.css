@@ -40,3 +40,8 @@
   width: 50px;
   margin-right: 15px;
 }
+
+.ant-modal-body {
+  height: 400px;
+  overflow:auto;
+}
