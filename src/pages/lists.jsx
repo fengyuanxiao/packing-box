@@ -20,9 +20,9 @@ function Lists(props) {
   // 储存获取的列表数据
   const [listData, setListData] = useState([]);
   // 储存方案名
-  const [schemName, setSchemeName] = useState();
+  const [schemName, setSchemeName] = useState(false);
   // 储存功能名
-  const [functionName, setFunctionName] = useState();
+  const [functionName, setFunctionName] = useState(false);
   // loading
   const [spinning, setSpinning] = useState(true);
   // 详情对话框弹出状态，默认为false
@@ -32,100 +32,124 @@ function Lists(props) {
 
   // 生命周期
   useEffect(() => {
-    // console.log(dd);
 
-    // 调用获取token
-    // axios.post('/kaopin/bom/getUser',{
-    //   'code': '56d785eea26037409dcc7024f72685bf',  // 通过该免登授权码可以获取用户身份
+    // 钉钉判断
+    if ( dd.env.platform !== 'notInDingTalk' ) {  //是否在钉钉环境中
+
+      dd.ready(function() {
+
+        dd.runtime.permission.requestAuthCode({
+          corpId: "dingd3db415677f4c851",
+          onSuccess: function(info) {
+            // code = info.code // 通过该免登授权码可以获取用户身份
+  
+            // 调用获取token
+            axios.post(global.constants.website+'/kaopin/bom/getUser',{
+              'code': info.code,  // 通过该免登授权码可以获取用户身份
+            })
+            .then(function (res) {
+              let tokens = res.data.data;
+              // 获取 存储token
+              localStorage.setItem("token", res.data.data);
+              
+              if ( res.status === 200 ) {
+  
+                // token 获取成功调用获取列表 ajax
+                axios.post(global.constants.website+'/kaopin/bom/index',{
+                  'page': 1,
+                },
+                {
+                  headers: {AppAuthorization: tokens}    //post 方法传 token
+                })
+                .then(function (res) {
+                  // console.log(res);
+                  if ( res.data.status ) {
+                    if ( res.data.msg === "token error" ) {
+                      props.history.push({ pathname: "/" });
+  
+                    } else {
+                      setSpinning(false);
+                      // 储存获取list数据
+                      setListData(res.data.data.result);
+                      
+                    }
+  
+                  } else {
+                    props.history.push({ pathname: "/" });
+                    message.warning(res.data.msg);
+                  }
+                  // console.log(res.data);
+                })
+                .catch(function (error) {
+                  // props.history.push({ pathname: "/" });
+                  message.warning(error);
+                  // setSpinning(false);
+                });
+        
+              } else {
+                message.warning(res.data.msg);
+              }
+              // console.log(res.data);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          },
+          onFail : function(err) {
+            alert(err);
+          }
+      
+        });
+
+        dd.error(function(error){
+          /**
+           {
+              errorMessage:"错误信息",// errorMessage 信息会展示出钉钉服务端生成签名使用的参数，请和您生成签名的参数作对比，找出错误的参数
+              errorCode: "错误码"
+           }
+          **/
+          alert('dd error: ' + JSON.stringify(error));
+        });
+
+      });
+
+    } else {
+      message.warning('请在手机上打开操作！');
+    }
+
+    // // token 获取成功调用获取列表 ajax      测试用
+    // axios.post(global.constants.website+'/kaopin/bom/index',{
+    //   'page': 1,
+    // },
+    // {
+    //   headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
     // })
     // .then(function (res) {
     //   // console.log(res);
-    //   if ( res.status === 200 ) {
-    //     // 获取 存储token
-    //     localStorage.setItem("token", res.data.data);
-    //     // console.log(res.data.data);
+    //   if ( res.data.status ) {
+    //     if ( res.data.msg === "token error" ) {
+    //       props.history.push({ pathname: "/" });
+
+    //     } else {
+    //       setSpinning(false);
+    //       // 储存获取list数据
+    //       setListData(res.data.data.result);
+          
+    //     }
 
     //   } else {
+    //     props.history.push({ pathname: "/" });
     //     message.warning(res.data.msg);
     //   }
     //   // console.log(res.data);
     // })
     // .catch(function (error) {
-    //   console.log(error);
+    //   // props.history.push({ pathname: "/" });
+    //   message.warning(error);
+    //   // setSpinning(false);
     // });
-
-
-    // 钉钉判断
-    if ( dd.env.platform !== 'notInDingTalk' ) {  //是否在钉钉环境中
-      // console.log(dd);
-      dd.runtime.permission.requestAuthCode({
-        corpId: "dingd3bd415677f4c851",
-        onSuccess: function(info) {
-          // console.log(info.code);
-          // code = info.code // 通过该免登授权码可以获取用户身份
-
-          // 调用获取token
-          axios.post(global.constants.website+'/kaopin/bom/getUser',{
-            'code': info.code,  // 通过该免登授权码可以获取用户身份
-          })
-          .then(function (res) {
-            // console.log(res);
-            if ( res.status === 200 ) {
-              // 获取 存储token
-              localStorage.setItem("token", res.data.data);
-              // console.log(res.data.data);
-      
-            } else {
-              message.warning(res.data.msg);
-            }
-            // console.log(res.data);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        },
-        onFail : function(err) {}
     
-      })
-
-    } else {
-      message.warning('请在手机上打开操作！');
-    }
     
-    // 获取列表
-    axios.post(global.constants.website+'/kaopin/bom/index',{
-      'page': 1,
-    },
-    {
-      headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
-    })
-    .then(function (res) {
-      // console.log(res);
-      if ( res.data.status ) {
-        if ( res.data.msg === "token error" ) {
-          props.history.push({ pathname: "/" });
-
-        } else {
-          setSpinning(false);
-          // console.log(res.data);
-          // console.log(res.data.data);
-          // console.log(res.data.data.result);
-          // 储存获取list数据
-          setListData(res.data.data.result);
-          
-        }
-
-      } else {
-        props.history.push({ pathname: "/" });
-        message.warning(res.data.msg);
-      }
-      // console.log(res.data);
-    })
-    .catch(function (error) {
-      // props.history.push({ pathname: "/" });
-      message.warning(error);
-      // setSpinning(false);
-    });
 
   },[])
 
@@ -193,10 +217,15 @@ function handleChange(value) {
 // 搜索按钮
 function handleSearch() {
 
-  if ( schemName ) {
+  if ( schemName === false && functionName === false ) {
+
+    message.warning('请输入方案名或功用！');
   
+  }else if ( schemName && functionName ) {
+    console.log('上面名字加功用');
+
     setSpinning(true);
-    // 获取列表
+    // 获取方案名指定列表列表
     axios.post(global.constants.website+'/kaopin/bom/index',{
       'page': 1,
       'plan_name': schemName,
@@ -239,9 +268,101 @@ function handleSearch() {
       setSpinning(false);
     });
 
+  }else if ( schemName === false || functionName ) {
+
+    setSpinning(true);
+    // 获取发货列表
+    axios.post(global.constants.website+'/kaopin/bom/index',{
+      'page': 1,
+      'plan_name': '',
+      'plan_type': functionName,
+    },
+    {
+      headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
+    })
+    .then(function (res) {
+      if ( res.data.status ) {
+
+        if ( res.data.data.result.length ) {
+
+          console.log(res.data.data);
+
+          if ( res.data.msg === "token error" ) {
+            props.history.push({ pathname: "/" });
+  
+          } else {
+
+            setSpinning(false);
+            // console.log(res.data.data.result);
+            // 储存获取list数据
+            setListData(res.data.data.result);
+            
+          }
+          
+
+        }else {
+          
+          setSpinning(false);
+          message.warning('暂无该数据！');
+        }
+
+      } else {
+        message.warning(res.data.msg);
+      }
+      // console.log(res.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+      setSpinning(false);
+    });
+
   }else {
 
-    message.warning('请输入方案名！');
+    setSpinning(true);
+    // 获取发货列表
+    axios.post(global.constants.website+'/kaopin/bom/index',{
+      'page': 1,
+      'plan_name': schemName,
+      'plan_type': '',
+    },
+    {
+      headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
+    })
+    .then(function (res) {
+      if ( res.data.status ) {
+
+        if ( res.data.data.result.length ) {
+
+          console.log(res.data.data);
+
+          if ( res.data.msg === "token error" ) {
+            props.history.push({ pathname: "/" });
+  
+          } else {
+
+            setSpinning(false);
+            // console.log(res.data.data.result);
+            // 储存获取list数据
+            setListData(res.data.data.result);
+            
+          }
+          
+
+        }else {
+          
+          setSpinning(false);
+          message.warning('暂无该数据！');
+        }
+
+      } else {
+        message.warning(res.data.msg);
+      }
+      // console.log(res.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+      setSpinning(false);
+    });
 
   }
   
@@ -306,7 +427,6 @@ message.config({ //更改警告框的位置
   
   return(
     <div style={{ height: '100%' }}>
-      <header className='header'>包装BOM</header>
       <div className='box'>
         <div className="list_Header">
           <Button onClick={handleHoudao} className="select_btn" type="primary" ghost={true} >添加后道包装</Button>
@@ -317,10 +437,10 @@ message.config({ //更改警告框的位置
         <Divider />
         {/* 搜索框 */}
         <div className="sousuo">
-          <Input style={{ width:'170px' }} placeholder="请输入方案名" onChange={nameChange} />
-          <Select defaultValue="请选择功用" style={{ width: 120 }} onChange={handleChange}>
-            <Option value="后道">后道</Option>
-            <Option value="发货">发货</Option>
+          <Input style={{ width:'160px' }} placeholder="请输入方案名" onChange={nameChange} />
+          <Select defaultValue="选择功用" style={{ width: 110, marginRight:'5px', marginLeft:'5px' }} onChange={handleChange}>
+            <Option value="2">后道</Option>
+            <Option value="1">发货</Option>
           </Select>
           <Button onClick={handleSearch}>搜索</Button>
         </div>
@@ -375,7 +495,9 @@ message.config({ //更改警告框的位置
                   details.details.map((item, index) => {
                     return(
                       <div className="details" key={index}>
-                        <img style={{ width: '50px' }} src={item.img} alt="详情图"/>
+                        <div style={{ width: '100px', marginRight: '15px' }}>
+                          <img src={item.img} alt="详情图"/>
+                        </div>
                         <p>
                           {item.物料名称 + item.规格 + "￥" + item.单价 + "/" + item.单位}
                         </p>

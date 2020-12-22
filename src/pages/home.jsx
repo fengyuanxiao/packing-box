@@ -97,9 +97,9 @@ function Home(props) {
     
   },[])
 
-  function handleBack() {
-    props.history.push({ pathname: "/" });
-  }
+  // function handleBack() {
+  //   props.history.push({ pathname: "/" });
+  // }
   
 
   // 一级分类盒回调函数 次类
@@ -228,6 +228,7 @@ function Home(props) {
       // setStorageMoneyArrs(storageMoneyArrs);
       // console.log(AstorageMoneyArrs);
 
+      // 计算成本价格的循环
       for (let i = 0; i < storageMoneyArrs.length; i++) {
         money += storageMoneyArrs[i];
         
@@ -278,6 +279,17 @@ function Home(props) {
 
     // storageIdArrs = checkedValues;
 
+    // for (let j = 0; j < storageMoneyArrs.length; j++) {
+    //   for (let k = 0; k < checkedValues.length; k++) {
+    //     if ( storageMoneyArrs[j] !== checkedValues[k] ) {
+    //       storageMoneyArrs.splice(j);
+    //     }
+        
+    //   }
+      
+    // }
+
+    //多选储存新价格
     for (let i = 0; i < checkedValues.length; i++) {
       sum += checkedValues[i];  //多选储存新价格
 
@@ -425,10 +437,6 @@ function Home(props) {
   return(
     <div style={{ height: '100%' }}>
       <Spin spinning={spinning} tip="Loading...">
-        <header className='header'>
-          <span className="fanhui" onClick={handleBack}>＜返回</span>
-        包装BOM
-        </header>
         <div className='box'>
           {/* 一级分类盒 */}
           <div style={{ display: 'flex' }}>
