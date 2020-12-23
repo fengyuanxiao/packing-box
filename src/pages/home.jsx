@@ -82,7 +82,7 @@ function Home(props) {
     // 获取主类
     axios.post(global.constants.website+'/kaopin/bom/getCategory',{
       'wuliao_type': '',
-      'cate_type': props.location.state,
+      'cate_type': localStorage.getItem("state"),
     },
     {
       headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
@@ -140,7 +140,7 @@ function Home(props) {
     // 获取次类
     axios.post(global.constants.website+'/kaopin/bom/getCategory',{
       'wuliao_type': value,
-      'cate_type': props.location.state,
+      'cate_type': localStorage.getItem("state"),
     },
     {
       headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
@@ -229,7 +229,7 @@ function Home(props) {
   let guigeObj = {};
   let money = 0;
   function handleOk() {
-    console.log(allGuigeArrs);
+    // console.log(allGuigeArrs);
 
     // console.log("点击了选择按钮" + storageId);
 
@@ -378,7 +378,7 @@ function Home(props) {
         axios.post(global.constants.website+'/kaopin/bom/add',{
           'details': allGuigeId.join(","),        //传入的id
           'plan_name': changeInputVals,        //计划名称
-          'plan_type': props.location.state,
+          'plan_type': localStorage.getItem("state"),
           'total_price': costPrice,
         },
         {
@@ -420,7 +420,7 @@ function Home(props) {
         axios.post(global.constants.website+'/kaopin/bom/add',{
           'details': storageIdArrs.join(","),         //传入的id
           'plan_name': changeInputVals,                      //计划名称
-          'plan_type': props.location.state,
+          'plan_type': localStorage.getItem("state"),
           'total_price': costPrice,
         },
         {

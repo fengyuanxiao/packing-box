@@ -156,22 +156,30 @@ function Lists(props) {
 
   },[])
 
+// 后道按钮
 function handleHoudao() {
   // console.log('添加后道包装2');
 
   localStorage.setItem("n", localStorage.getItem("ns") + 1);
   props.history.push({ pathname: "/home", state: 2 });
-  // document.getElementById('root').title('后道包装');
-
+  
+  // 添加厚道包装储存状态码
+  localStorage.setItem("state", 2);
+  // 标题头
+  document.title = "后道包装";
+  // console.log(document.title);
 }
-
+// 发货按钮
 function handleFahuo() {
   // console.log("添加发货包装1");
 
   localStorage.setItem("n", localStorage.getItem("ns") + 1);
   props.history.push({ pathname: "/home", state: 1 });
-  // document.getElementById('root').title('发货包装');
-  // document
+
+  // 添加厚道包装储存状态码
+  localStorage.setItem("state", 1);
+  // 标题头
+  document.title = "发货包装";
   
 }
 
