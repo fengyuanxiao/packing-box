@@ -17,6 +17,7 @@
   align-items: center;
   justify-content: space-around;
 }
+
 .list_footer {
   width: 95%;
   text-align: center;
@@ -28,23 +29,30 @@
   margin: 15px 0;
 }
 
+.lists .ant-list-items {
+  height: 90%;
+  overflow: auto;
+}
 .ant-list-pagination {
-  margin-top: 15px;
   text-align: center;
+  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  right: 25%;
 }
 
 .details {
   display: flex;
+  align-items: center;
   margin-bottom: 10px;
 }
 .details > div > img {
-  max-width:100%;
   width:100%;
   overflow:hidden;
   /* margin-right: 15px; */
 }
 
 .ant-modal-body {
-  height: 250px;
+  height: 330px;
   overflow:auto;
 }

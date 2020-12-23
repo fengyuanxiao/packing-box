@@ -1,4 +1,5 @@
 .box {
+  height: 90%;
   padding: 0 1rem 0 1rem;
 }
 
@@ -52,25 +53,29 @@
 }
 
 .ant-col {
-  padding: 0.5rem 0 0.5rem 0rem;
+  padding: 0.6rem 0 0.6rem 0rem;
   position:relative;
 }
 .ant-image {
   position: absolute;
   top: 20px;
   left: 20px;
+  width: 20%;
+  height: 45%;
+  overflow: hidden;
 }
 .guige {
   display: flex;
   align-items: center;
 }
 .homeImg {
-  width: 50px;
+  width: auto;
+  height: auto;
+  max-width: 100%;
   margin: 0 10px 0 15px;
-  z-index: 99999;
 }
 .specification_pull_down {
-  height: 440px;
+  height: 74%;
   overflow:auto;
   border-radius: 5px;
 }
@@ -97,8 +102,8 @@
 .footer {
   position: absolute;
   bottom: 10px;
-  width: 100%;
-  height: 70px;
+  width: 95%;
+  height: 10%;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -117,7 +122,7 @@
   position: absolute;
   content: ' ';
   top: 26px;
-  left: 52.5%;
+  left: 51%;
   transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   -webkit-transform: rotate(-90deg);
@@ -146,6 +151,6 @@
   justify-content:center;
 }
 
-.ant-modal-body {
-  /* height:auto !important; */
+.modealInput .ant-modal-body {
+  height:auto !important;
 }
