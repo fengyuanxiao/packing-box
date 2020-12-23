@@ -13,8 +13,6 @@ let chongfuArr = [];
 let storageIdArrs = [];     //储存选中按钮 选中的规格id
 let storageMoneyArrs = [];
 
-// 成本添加
-let o = 0;
 
 function Home(props) {
   // console.log(props);
@@ -188,10 +186,6 @@ function Home(props) {
       
     }
     
-    // console.log(value);
-    // console.log(storageIdArrs);
-    // console.log(threeData);
-
     setClockState(true); //setClockState状态为false 无法选择规格
 
     for (let j = 0; j < storageIdArrs.length; j++) {
@@ -230,6 +224,7 @@ function Home(props) {
   
   // 选择函数，选择将确定的规格存入数组中，后将遍历到eslect
   let guigeObj = {};
+  // 选择添加成本价格
   let money = 0;
   function handleOk() {
     // console.log(allGuigeArrs);
@@ -254,7 +249,7 @@ function Home(props) {
       guigeObj.storageMoney = parseFloat(storageMoney);
       // console.log(guigeObj);
       // 将添加的多选框数据追加到数组中
-      allGuigeArrs.push(guigeObj);
+      allGuigeArrs.unshift(guigeObj);
       setallGuigeArrs(allGuigeArrs);
       // console.log(allGuigeArrs);
 
@@ -265,66 +260,42 @@ function Home(props) {
 
       // 储存每个单价到数组
       storageMoneyArrs.push(guigeObj.storageMoney);
-      // setStorageMoneyArrs(storageMoneyArrs);
-      // console.log(storageMoneyArrs);
 
       // 计算成本价格的循环
       for (let i = 0; i < storageMoneyArrs.length; i++) {
         money += storageMoneyArrs[i];
         
       }
-      // console.log(money.toFixed(4));
+      // 保留四位，储存总价
       setCostPrice(money.toFixed(4));
-      // console.log(allGuigeArrs);
-      // console.log(storageIdArrs);
-      // console.log(storageMoneyArrs);
 
-
+      // 判断是否重复用
       chongfuArr.push(storageId);
-      // console.log(chongfuArr);
-      // 合并 判断重复 数组
-      // chongfuArrs.concat(chongfuArr);
-      // console.log(chongfuArrs);
 
-      // 将选中的数据追加到数组
-      // checkboxArrs.push(storageId + twoValue + threeValue);
-      // 合并数组
-      // setConcatArr(checkboxArrs.concat(newCheckboxArrs));
-      
-      // 储存价格到数组中
-      // moneyArrs.push(storageMoney);
-      // 合并价格数组 并保存
-      // setConcatMoneyArr(moneyArrs.concat(newMoneyArr));
-      // console.log(moneyArrs);
-      // console.log(parseFloat(storageMoney));
-      o += parseFloat(storageMoney)
-      setCostPrice(o.toFixed(4));
+      // console.log(storageMoneyArrs);
+      // console.log(money);
 
-      // 循环截取出包装盒id ，后选中按钮点击默认显示
-      // defaultValueArr.push(checkboxArrs[num].slice(0,2));
-      // num++;
-      // console.log(defaultValueArr);
       setClockState(false); //setClockState状态为false 无法选择规格
 
     }else {
       message.warning('请选择规格！');
     }
     
-    // console.log('*********************************');
 
   }
 
   // 多选框
   let sum = 0;
+  let sdr = [];
   function onChangea(checkedValues) {
-
+    // 将多选value 储给 storageIdArrs
     storageIdArrs = checkedValues;
-    // console.log(storageIdArrs);
 
     //多选储存新价格
     for (let j = 0; j < allGuigeArrs.length; j++) {
       for (let k = 0; k < checkedValues.length; k++) {
         if ( allGuigeArrs[j].storageId === checkedValues[k] ) {
+          sdr.push(allGuigeArrs[j].storageMoney);
           //多选储存新价格
           sum += allGuigeArrs[j].storageMoney
           
@@ -332,16 +303,19 @@ function Home(props) {
         }
       }
     }
-
-
+    storageMoneyArrs = sdr;
+    // 新的价格总价，替换旧的价格总价
+    money = sum;
     // 多选价格更变储存
     setCostPrice(sum.toFixed(4));
     // setStorageIdArrs(allGuigeId.concat(storageIdArrs));
 
     // console.log(allGuigeArrs);
     // console.log(checkedValues);
-    // console.log(storageIdArrs);
-    // console.log(sum);
+    // console.log(`新价格数组${sdr}`);
+    // console.log(`旧价格数组${storageMoneyArrs}`);
+    // console.log(`旧总价格${money}`);
+    // console.log(`新总价格${sum}`);
   }
 
   // 保存按钮 并调用ajax
@@ -447,7 +421,7 @@ function Home(props) {
           {/* 多选框 */}
           <div className="specification_pull_down">
             {/*  defaultValue={storageIdArrs} */}
-            <Checkbox.Group defaultValue={storageIdArrs} style={{ width: '100%' }} onChange={onChangea}>
+            <Checkbox.Group value={storageIdArrs} style={{ width: '100%' }} onChange={onChangea}>
               <Row>
                 {
                   sallGuigeArrs ?
