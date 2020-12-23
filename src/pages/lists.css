@@ -29,6 +29,7 @@
 }
 
 .ant-list-pagination {
+  margin-top: 15px;
   text-align: center;
 }
 
@@ -44,6 +45,6 @@
 }
 
 .ant-modal-body {
-  height: 400px;
+  height: 250px;
   overflow:auto;
 }

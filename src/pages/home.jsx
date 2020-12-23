@@ -54,8 +54,6 @@ function Home(props) {
   // 储存选中规格的图片
   const [storageImg, setStorageImg] = useState(null);
 
-  const [AstorageMoneyArrs, setStorageMoneyArrs] = useState(null);
-
   // 显示到多选框
   const [twoValue, setTwoValue] = useState(null);
   const [threeValue, setThreeValue] = useState(null);
@@ -69,8 +67,6 @@ function Home(props) {
 
   // 成本价
   const [costPrice, setCostPrice] = useState(0);
-  // 包装方案名state
-  const [inputVal, setInputVal] = useState('');
   // loading
   const [spinning, setSpinning] = useState(false);
 
@@ -110,7 +106,7 @@ function Home(props) {
     });
     
     
-  },[])
+  },[props.history]);
 
   // 方案名对话框控制状态
   const [isModalVisible, setIsModalVisible] = useState(true);
@@ -469,7 +465,7 @@ function Home(props) {
   return(
     <div style={{ height: '100%' }}>
       <Spin spinning={spinning} tip="Loading...">
-        <header className='header'>{changeInputVals}</header>
+        <header className='header'>{changeInputVals} —【{localStorage.getItem("state") === '2' ? "后道" : "发货"}】</header>
         <div className='box'>
           {/* 一级分类盒 */}
           <div style={{ display: 'flex' }}>
@@ -562,7 +558,7 @@ function Home(props) {
 
       </Spin>
       {/* 弹框输入方案名 */}
-          <Modal title="必须输入方案名！" closable={false} visible={isModalVisible} footer={[
+          <Modal title={localStorage.getItem("state") === '2' ? "请输入后道包装名！" : "请输入发货包装名！"} closable={false} visible={isModalVisible} footer={[
             <Button key="back" type="primary" onClick={handleModalOk}>确定</Button>,
           ]}>
         <Input onChange={changeInputVal} placeholder="请输入包装方案名：" />

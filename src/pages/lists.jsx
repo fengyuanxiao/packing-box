@@ -37,120 +37,120 @@ function Lists(props) {
   useEffect(() => {
 
     // 钉钉判断
-    if ( dd.env.platform !== 'notInDingTalk' ) {  //是否在钉钉环境中
+    // if ( dd.env.platform !== 'notInDingTalk' ) {  //是否在钉钉环境中
 
-      dd.ready(function() {
+    //   dd.ready(function() {
 
-        dd.runtime.permission.requestAuthCode({
-          corpId: "dingd3db415677f4c851",
-          onSuccess: function(info) {
-            // code = info.code // 通过该免登授权码可以获取用户身份
+    //     dd.runtime.permission.requestAuthCode({
+    //       corpId: "dingd3db415677f4c851",
+    //       onSuccess: function(info) {
+    //         // code = info.code // 通过该免登授权码可以获取用户身份
   
-            // 调用获取token
-            axios.post(global.constants.website+'/kaopin/bom/getUser',{
-              'code': info.code,  // 通过该免登授权码可以获取用户身份
-            })
-            .then(function (res) {
-              let tokens = res.data.data;
-              // 获取 存储token
-              localStorage.setItem("token", res.data.data);
+    //         // 调用获取token
+    //         axios.post(global.constants.website+'/kaopin/bom/getUser',{
+    //           'code': info.code,  // 通过该免登授权码可以获取用户身份
+    //         })
+    //         .then(function (res) {
+    //           let tokens = res.data.data;
+    //           // 获取 存储token
+    //           localStorage.setItem("token", res.data.data);
               
-              if ( res.status === 200 ) {
+    //           if ( res.status === 200 ) {
   
-                // token 获取成功调用获取列表 ajax
-                axios.post(global.constants.website+'/kaopin/bom/index',{
-                  'page': 1,
-                },
-                {
-                  headers: {AppAuthorization: tokens}    //post 方法传 token
-                })
-                .then(function (res) {
-                  // console.log(res);
-                  if ( res.data.status ) {
-                    if ( res.data.msg === "token error" ) {
-                      props.history.push({ pathname: "/" });
+    //             // token 获取成功调用获取列表 ajax
+    //             axios.post(global.constants.website+'/kaopin/bom/index',{
+    //               'page': 1,
+    //             },
+    //             {
+    //               headers: {AppAuthorization: tokens}    //post 方法传 token
+    //             })
+    //             .then(function (res) {
+    //               // console.log(res);
+    //               if ( res.data.status ) {
+    //                 if ( res.data.msg === "token error" ) {
+    //                   props.history.push({ pathname: "/" });
   
-                    } else {
-                      setSpinning(false);
-                      // 储存获取list数据
-                      setListData(res.data.data.result);
+    //                 } else {
+    //                   setSpinning(false);
+    //                   // 储存获取list数据
+    //                   setListData(res.data.data.result);
                       
-                    }
+    //                 }
   
-                  } else {
-                    props.history.push({ pathname: "/" });
-                    message.warning(res.data.msg);
-                  }
-                  // console.log(res.data);
-                })
-                .catch(function (error) {
-                  // props.history.push({ pathname: "/" });
-                  message.warning(error);
-                  // setSpinning(false);
-                });
+    //               } else {
+    //                 props.history.push({ pathname: "/" });
+    //                 message.warning(res.data.msg);
+    //               }
+    //               // console.log(res.data);
+    //             })
+    //             .catch(function (error) {
+    //               // props.history.push({ pathname: "/" });
+    //               message.warning(error);
+    //               // setSpinning(false);
+    //             });
         
-              } else {
-                message.warning(res.data.msg);
-              }
-              // console.log(res.data);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-          },
-          onFail : function(err) {
-            alert(err);
-          }
+    //           } else {
+    //             message.warning(res.data.msg);
+    //           }
+    //           // console.log(res.data);
+    //         })
+    //         .catch(function (error) {
+    //           console.log(error);
+    //         });
+    //       },
+    //       onFail : function(err) {
+    //         alert(err);
+    //       }
       
-        });
+    //     });
 
-        dd.error(function(error){
-          /**
-           {
-              errorMessage:"错误信息",// errorMessage 信息会展示出钉钉服务端生成签名使用的参数，请和您生成签名的参数作对比，找出错误的参数
-              errorCode: "错误码"
-           }
-          **/
-          alert('dd error: ' + JSON.stringify(error));
-        });
+    //     dd.error(function(error){
+    //       /**
+    //        {
+    //           errorMessage:"错误信息",// errorMessage 信息会展示出钉钉服务端生成签名使用的参数，请和您生成签名的参数作对比，找出错误的参数
+    //           errorCode: "错误码"
+    //        }
+    //       **/
+    //       alert('dd error: ' + JSON.stringify(error));
+    //     });
 
-      });
+    //   });
 
-    } else {
-      message.warning('请在手机上打开操作！');
-    }
+    // } else {
+    //   message.warning('请在手机上打开操作！');
+    // }
 
     // // token 获取成功调用获取列表 ajax      测试用
-    // axios.post(global.constants.website+'/kaopin/bom/index',{
-    //   'page': 1,
-    // },
-    // {
-    //   headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
-    // })
-    // .then(function (res) {
-    //   // console.log(res);
-    //   if ( res.data.status ) {
-    //     if ( res.data.msg === "token error" ) {
-    //       props.history.push({ pathname: "/" });
+    axios.post(global.constants.website+'/kaopin/bom/index',{
+      'page': 1,
+    },
+    {
+      headers: {AppAuthorization: localStorage.getItem("token")}    //post 方法传 token
+    })
+    .then(function (res) {
+      // console.log(res);
+      if ( res.data.status ) {
+        if ( res.data.msg === "token error" ) {
+          props.history.push({ pathname: "/" });
 
-    //     } else {
-    //       setSpinning(false);
-    //       // 储存获取list数据
-    //       setListData(res.data.data.result);
+        } else {
+          setSpinning(false);
+          // 储存获取list数据
+          setListData(res.data.data.result);
           
-    //     }
+        }
 
-    //   } else {
-    //     props.history.push({ pathname: "/" });
-    //     message.warning(res.data.msg);
-    //   }
-    //   // console.log(res.data);
-    // })
-    // .catch(function (error) {
-    //   // props.history.push({ pathname: "/" });
-    //   message.warning(error);
-    //   // setSpinning(false);
-    // });
+      } else {
+        props.history.push({ pathname: "/" });
+        message.warning(res.data.msg);
+      }
+      // console.log(res.data);
+    })
+    .catch(function (error) {
+      // props.history.push({ pathname: "/" });
+      message.warning(error);
+      // setSpinning(false);
+    });
     
     
 
@@ -180,6 +180,7 @@ function handleFahuo() {
   localStorage.setItem("state", 1);
   // 标题头
   document.title = "发货包装";
+  // console.log(document.title);
   
 }
 
@@ -207,8 +208,8 @@ function nameChange(e) {
 
         } else {
           setSpinning(false);
-          console.log(res.data.data.result);
-          console.log(res.data.data);
+          // console.log(res.data.data.result);
+          // console.log(res.data.data);
           // 储存获取list数据
           setListData(res.data.data.result);
           
@@ -241,7 +242,7 @@ function handleSearch() {
     message.warning('请输入方案名或功用！');
   
   }else if ( schemName && functionName ) {
-    console.log('上面名字加功用');
+    // console.log('上面名字加功用');
 
     setSpinning(true);
     // 获取方案名指定列表列表
@@ -304,7 +305,7 @@ function handleSearch() {
 
         if ( res.data.data.result.length ) {
 
-          console.log(res.data.data);
+          // console.log(res.data.data);
 
           if ( res.data.msg === "token error" ) {
             props.history.push({ pathname: "/" });
@@ -352,7 +353,7 @@ function handleSearch() {
 
         if ( res.data.data.result.length ) {
 
-          console.log(res.data.data);
+          // console.log(res.data.data);
 
           if ( res.data.msg === "token error" ) {
             props.history.push({ pathname: "/" });
@@ -446,7 +447,7 @@ message.config({ //更改警告框的位置
   
   return(
     <div style={{ height: '100%' }}>
-      <div className='box'>
+      <div className='box' style={{ height: '100%' }}>
         <div className="list_Header">
           <Button onClick={handleHoudao} className="select_btn" type="primary" ghost={true} >添加后道包装</Button>
 
@@ -464,22 +465,22 @@ message.config({ //更改警告框的位置
           <Button onClick={handleSearch}>搜索</Button>
         </div>
 
-        <div>
+        <div style={{ height: '77%' }}>
           <Spin spinning={spinning} tip="列表加载中...">
           {
             listData !== null ?
-            <List style={{ height: '500px' }}
+            <List style={{ height: '100%' }}
               locale={{emptyText: "暂无该数据"}}
               pagination={{
                 onChange: page => {
                     // console.log(page);
                   },
-                  pageSize: 7,
+                  pageSize: 8,
               }}
               itemLayout="horizontal"
               dataSource={listData}
               renderItem={item => (
-                <List.Item onClick={() => delItem(item.id) }>
+                <List.Item onClick={() => delItem(item.id) } style={{ padding: '10px 0' }}>
                   <List.Item.Meta
                     title={item.plan_name}
                     description={item.plan_type + "　" + "￥" + item.total_price}
