@@ -26,6 +26,8 @@ function Lists(props) {
   const [schemName, setSchemeName] = useState(false);
   // 储存功能名
   const [functionName, setFunctionName] = useState(false);
+  // 功用select value
+  const [selectVal, setSelectVal] = useState('选择功用');
   // loading
   const [spinning, setSpinning] = useState(true);
   // 详情对话框弹出状态，默认为false
@@ -232,10 +234,14 @@ function nameChange(e) {
 function handleChange(value) {
   // 储存功能值
   setFunctionName(value);
+  // 更改功用选中默认
+  setSelectVal(value);
   // console.log(`selected ${value}`);
 }
 // 搜索按钮
 function handleSearch() {
+  // 更改功用选中默认
+  // setSelectVal('选择功用');
 
   if ( schemName === false && functionName === false ) {
 
@@ -268,6 +274,10 @@ function handleSearch() {
             // console.log(res.data.data.result);
             // 储存获取list数据
             setListData(res.data.data.result);
+
+            // 更改功用默认值
+            setSelectVal('选择功用');
+            setFunctionName(false);
             
           }
           
@@ -275,6 +285,9 @@ function handleSearch() {
         }else {
           
           setSpinning(false);
+          // 更改功用默认值
+          setSelectVal('选择功用');
+          setFunctionName(false);
           message.warning('暂无该数据！');
         }
 
@@ -315,6 +328,9 @@ function handleSearch() {
             setSpinning(false);
             // console.log(res.data.data.result);
             // 储存获取list数据
+            // 更改功用默认值
+            setSelectVal('选择功用');
+            setFunctionName(false);
             setListData(res.data.data.result);
             
           }
@@ -323,6 +339,9 @@ function handleSearch() {
         }else {
           
           setSpinning(false);
+          // 更改功用默认值
+          setSelectVal('选择功用');
+          setFunctionName(false);
           message.warning('暂无该数据！');
         }
 
@@ -363,6 +382,9 @@ function handleSearch() {
             setSpinning(false);
             // console.log(res.data.data.result);
             // 储存获取list数据
+            // 更改功用默认值
+            setSelectVal('选择功用');
+            setFunctionName(false);
             setListData(res.data.data.result);
             
           }
@@ -371,6 +393,9 @@ function handleSearch() {
         }else {
           
           setSpinning(false);
+          // 更改功用默认值
+          setSelectVal('选择功用');
+          setFunctionName(false);
           message.warning('暂无该数据！');
         }
 
@@ -459,7 +484,7 @@ message.config({ //更改警告框的位置
           {/* 搜索框 */}
           <div className="sousuo">
             <Input style={{ width:'160px' }} placeholder="请输入方案名" onChange={nameChange} />
-            <Select defaultValue="选择功用" style={{ width: 110, marginRight:'5px', marginLeft:'5px' }} onChange={handleChange}>
+            <Select value={selectVal} style={{ width: 110, marginRight:'5px', marginLeft:'5px' }} onChange={handleChange}>
               <Option value="2">后道</Option>
               <Option value="1">发货</Option>
             </Select>

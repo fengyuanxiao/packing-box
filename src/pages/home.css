@@ -121,7 +121,7 @@
   border-color: transparent transparent #effdff transparent;
   position: absolute;
   content: ' ';
-  top: 26px;
+  top: 36%;
   left: 51%;
   transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
@@ -129,7 +129,7 @@
   -moz-transform: rotate(-90deg);
 }
 .moneys:before {
-  top: 26px;
+  top: 36%;
   border-color: transparent transparent #09f transparent;
 }
 .e {
